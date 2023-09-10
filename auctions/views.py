@@ -108,14 +108,20 @@ def index(request):
 
 
 def displayCategory(request):
+    selected_category = request.POST.get('category')
+    
     if request.method == "POST":
-        categoryFromForm = request.POST['category']
-        category = Category.objects.get(categoryName=categoryFromForm)
-        activeListings = Listing.objects.filter(isActive=True, category=category)
+        if selected_category == "":
+            activeListings = Listing.objects.filter(isActive=True)
+        else:
+            category = Category.objects.get(categoryName=selected_category)
+            activeListings = Listing.objects.filter(isActive=True, category=category)
         allCategories = Category.objects.all()
+        
         return render(request, "auctions/index.html", {
             "listings": activeListings,
             "categories": allCategories,
+            "selected_category": selected_category,  
         })
 
 
